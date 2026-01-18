@@ -1,0 +1,44 @@
+# Binaries
+zlds
+server
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Logs
+*.log
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Package managers
+node_modules/
+
+# Temporary files
+tmp/
+cache/
+
+# Coverage / profiling
+*.gcda
+*.gcno
+*.gcov
+
+# Core dumps
+core
+core.*
+
+# Lua compiled files (optional)
+*.luac
+
