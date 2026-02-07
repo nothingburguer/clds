@@ -2,14 +2,28 @@ CC=gcc
 CFLAGS=-O2 -Wall
 LUA_FLAGS=$(shell pkg-config --cflags --libs lua)
 
-all: clds server
+PREFIX ?= /usr/local
+BINDIR = $(PREFIX)/bin
 
-clds:
-	$(CC) clds.c -o clds
+CLI = clds
+SERVER = clds-server
 
-server:
-	$(CC) engine/server.c -o server $(LUA_FLAGS)
+all: $(CLI) $(SERVER)
+
+$(CLI):
+	$(CC) clds.c -o $(CLI)
+
+$(SERVER):
+	$(CC) engine/server.c -o $(SERVER) $(LUA_FLAGS)
+
+install: $(CLI) $(SERVER)
+	install -Dm755 $(CLI) $(BINDIR)/$(CLI)
+	install -Dm755 $(SERVER) $(BINDIR)/$(SERVER)
+
+uninstall:
+	rm -f $(BINDIR)/$(CLI)
+	rm -f $(BINDIR)/$(SERVER)
 
 clean:
-	rm -f clds server
+	rm -f $(CLI) $(SERVER)
 

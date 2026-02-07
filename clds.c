@@ -28,6 +28,32 @@ void write_file(const char *path, const char *content) {
     fclose(f);
 }
 
+void copy_binary(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb");
+    if (!in) {
+        perror("[CLDS] == ERROR: fopen src (clds-server not found)");
+        exit(1);
+    }
+
+    FILE *out = fopen(dst, "wb");
+    if (!out) {
+        perror("[CLDS] == ERROR: fopen dst (non-null, exist)");
+        exit(1);
+    }
+
+    char buf[4096];
+    size_t n;
+    while ((n = fread(buf, 1, sizeof(buf), in)) > 0) {
+        fwrite(buf, 1, n, out);
+    }
+
+    fclose(in);
+    fclose(out);
+
+    chmod(dst, 0755);
+}
+
+
 const char *default_routes =
 "routes = {\n"
 "  [\"/\"] = \"index.html\",\n"
@@ -67,12 +93,29 @@ void create_project(const char *name) {
     snprintf(path, sizeof(path), "%s/app/views/hello.html", name);
     write_file(path, hello_html);
 
-    printf("Project '%s' created\n", name);
+    char server_dst[512];
+    snprintf(server_dst, sizeof(server_dst), "%s/clds-server", name);
+
+    copy_binary("/usr/local/bin/clds-server", server_dst);
+
+    printf("[CLDS] == Project '%s'/ created\n", name);
 }
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("usage: zlds <new|run>\n");
+        printf(
+            "clds - C + Lua Dynamic Server\n"
+            "\nA lightweight web server written in C\n"
+            "with dynamic routing support via Lua\n\n"
+            "Usage:\n"
+            "\tclds new <project-name>   Create a new project\n"
+            "\tclds run                  Run the current project\n\n"
+            "Examples:\n"
+            "\tclds new myapp\n"
+            "\tcd myapp && clds run\n"
+            "\nCopyright (c) 2026 nothingburguer\n"
+            "This program is distributed under the MIT License\n"
+        );
         return 0;
     }
 
@@ -81,7 +124,7 @@ int main(int argc, char **argv) {
         create_project(argv[2]);
     }
     else if (strcmp(argv[1], "run") == 0) {
-        system("./server");
+        system("./clds-server");
     }
 
     return 0;
