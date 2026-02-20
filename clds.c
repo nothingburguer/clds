@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
             "Examples:\n"
             "\tclds new myapp\n"
             "\tcd myapp && clds run\n"
-            "\nCopyright (c) 2026 nothingburguer\n"
+            "\nCopyright (c) 2026 grassleaff\n"
             "This program is distributed under the MIT License\n"
         );
         return 0;
